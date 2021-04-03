@@ -1,7 +1,7 @@
 export type BottomTabParamList = {
   Menu: undefined;
   FAQ: undefined;
-  Settings: undefined;
+  QA: undefined;
 };
 
 export type TabOneParamList = {

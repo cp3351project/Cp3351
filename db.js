@@ -208,7 +208,7 @@ class Farms extends DB {
 
   
   UpdateFarm =  async(farmId) => {
-   await db.collection(this.collection).doc(farmId).update({active:true},{merge:true})
+   await db.collection(this.collection).doc(farmId).update({active:true,subScriptionStatus:"payed"},{merge:true})
   };
 
   listenByUser = (set, userid) => {
@@ -384,7 +384,8 @@ class Reports extends DB {
   }
 
   createReport = async (typeOfQuery, query, userId) => {
-    const { uid: userid } = await db.collection(this.collection).add({
+    console.log(userId)
+    await db.collection(this.collection).add({
       typeOfQuery: typeOfQuery,
       query: query,
       userId: userId,

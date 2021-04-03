@@ -27,13 +27,7 @@ export default function DeviceStatusScreen({ set }) {
       alert(error);
     }
 
-    // return () => {
-    //   setDevices([])
-    //   setSelectedFarm(null)
-    //   setFarms([])
-    //   setDropDownFarms([])
-    //   //set(null)
-    // };
+
   }, []);
 
   useEffect(() => {

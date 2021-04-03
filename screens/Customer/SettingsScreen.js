@@ -1,13 +1,12 @@
-import React, { useContext } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import { StyleSheet } from "react-native";
 import {  View } from "../../components/Themed";
 import { Button } from "react-native-elements";
-import UserContext from "../../UserContext";
+// import UserContext from "../../UserContext";
 import fb from "../../fb";
 
 export default function SettingsScreen() {
-  const { user } = useContext(UserContext);
-
+  // const { user } = useContext(UserContext);
   const logout = async () => {
     await fb.auth().signOut();
   };
@@ -15,12 +14,7 @@ export default function SettingsScreen() {
   return (
     <View>
       <View style={styles.getStartedContainer}>
-        {/* <TouchableOpacity onPress={logout} style={styles.title}>
-          <Text style={styles.helpLinkText} lightColor={Colors.light.tint}>
-            Logout
-          </Text> */}
           <Button buttonStyle={styles.logoutBtn} onPress={logout} title="Logout" />
-        {/* </TouchableOpacity> */}
       </View>
     </View>
   );

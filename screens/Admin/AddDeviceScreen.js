@@ -20,12 +20,7 @@ export default function addDeviceScreen({func}) {
       alert(error)
     }
 
-    // return () => {
-    //   setUid("")
-    //   setSelectedFarm("")
-    //   setFarms([])
-    //   setDropDownFarms([])
-    // };
+
 
   },[Uid]);
 

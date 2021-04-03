@@ -26,9 +26,8 @@ export default function ReportPage() {
 
   const Submit = async () => {
     try {
-      setUid(user.id);
       setModalVisible(true);
-      await db.Reports.createReport(complain, userInput, Uid);
+      await db.Reports.createReport(complain, userInput, id);
     } catch (error) {
       alert(error.message);
     }

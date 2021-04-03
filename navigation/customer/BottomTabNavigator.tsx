@@ -6,11 +6,13 @@ import * as React from 'react';
 import Colors from '../../constants/Colors';
 import useColorScheme from '../../hooks/useColorScheme';
 // @ts-expect-error
+import QaScreen from '../../screens/Customer/QaScreen';
+// @ts-expect-error
 import SensorsScreen from '../../screens/Customer/SensorsScreen';
 // @ts-expect-error
 import FAQScreen from '../../screens/Customer/ReportPage';
-// @ts-expect-error
-import SettingsScreen from '../../screens/Customer/SettingsScreen';
+
+
 import { BottomTabParamList, TabOneParamList, TabTwoParamList, TabThreeParamList } from './types';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
@@ -35,13 +37,13 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="help-outline" color={color} />,
         }}
       />
-      {/* <BottomTab.Screen
-        name="Settings"
+      <BottomTab.Screen
+        name="QA"
         component={TabThreeNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog-outline" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="person" color={color} />,
         }}
-      /> */}
+      />
     </BottomTab.Navigator>
   );
 }
@@ -90,8 +92,8 @@ function TabThreeNavigator() {
     <TabThreeStack.Navigator>
       <TabThreeStack.Screen
         name="SettingsScreen"
-        component={SettingsScreen}
-        options={{ headerTitle: 'Settings' }}
+        component={QaScreen}
+        options={{ headerTitle: 'Q&A' }}
       />
     </TabThreeStack.Navigator>
   );
