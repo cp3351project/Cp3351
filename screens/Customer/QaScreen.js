@@ -21,7 +21,11 @@ export default function QaScreen() {
   return (
     <View>
       <ScrollView style={styles.container}>
-      <Text h1 style={{ marginBottom: 10 }}>Questions</Text>
+        
+      {
+    questions.length > 0  && questions.find(item => item.typeOfQuery === "Ask a question") !== undefined &&  <Text h1 style={{ marginBottom: 10 , color:'green' }}>Questions</Text>
+      }
+     
         {questions &&
           questions.filter(item => item.typeOfQuery === "Ask a question").map((question, key) => (
             <Card key={key}>
@@ -38,9 +42,12 @@ export default function QaScreen() {
                 Reply: {question.reply}
               </Text>
             </Card>
-          ))}
-      <Text h1 style={{ marginBottom: 10 }}>Bugs reported</Text>
-        {questions &&
+          ))} 
+      {
+        questions.filter(item => item.userId == id && item.typeOfQuery === "Report a bug").length > 0 && <Text h1 style={{ marginBottom: 10 , color:'green' }}>Bugs reported</Text>
+      }
+        {
+        questions &&
           questions.filter(item => item.userId == id && item.typeOfQuery === "Report a bug").map((question, key) => (
             <Card key={key}>
               <Card.Title key={key}>

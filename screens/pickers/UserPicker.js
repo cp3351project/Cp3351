@@ -18,10 +18,6 @@ export default function UserPicker({ set , setUID }) {
         if (setUID){
             setUID(userId)
         }
-        // return () => {
-        //     setUserId("")
-        //     setUsers([])
-        //   };
     },[userId])
 
     return (

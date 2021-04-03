@@ -4,16 +4,18 @@ import {
   ScrollView,
 } from "react-native";
 import { View } from "../../components/Themed";
-import {  Text, Card, Icon } from "react-native-elements";
+import {  Text, Card, Icon , Button } from "react-native-elements";
 import UserContext from "../../UserContext";
 import SensorComponent from "../../components/SensorComponent";
 import ActionPicker from "../pickers/ActionCategory";
+import ReportPage from "../Customer/ReportPage";
 import db from "../../db";
 
 export default function TesterScreen() {
   const [device, setDevices] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState("");
   const [farm, setFarms] = useState([]); // all the farms with their props
+  const [visable, setVisable] = useState(false); // all the farms with their props
   const [farms, setDropDownFarms] = useState([]); // dropdown values
   const { user } = useContext(UserContext);
   const { id } = user;
@@ -59,8 +61,9 @@ export default function TesterScreen() {
 
 
   return (
-    <View>
-      <ScrollView style={styles.container}>
+    
+      <View>
+      {  !visable && <ScrollView style={styles.container}>
         {farms?.length > 0 && (
           <View
             style={{
@@ -86,17 +89,33 @@ export default function TesterScreen() {
                 <Icon key={key} size={16} name="star" />
                 Status: {dev.isOn == true ? "on" : "off"}
               </Text>
+
+         
               <SensorComponent deviceId={dev.id} isTester={true}></SensorComponent>
+
+              <Button
+            buttonStyle={{
+              backgroundColor: "red",
+            }}
+            onPress={ () => {setVisable(true)}}
+            title="Report issue"
+          />
             </Card>
           ))}
 
-        {selectedFarm === "" && (
+        {device === "" && (
           <Text h3 style={{ textAlign: "center" }}>
             No Selection made{" "}
           </Text>
         )}
 
       </ScrollView>
+     }
+
+     {
+        visable && <ReportPage isTester={true}/>
+
+     }
     </View>
   );
 }

@@ -1,4 +1,4 @@
-{
+  {
   "expo": {
     "name": "imagesensor",
     "slug": "imagesensor",
@@ -25,6 +25,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
+      },
+      "config": {
+          "googleMaps": {
+            "apiKey": "AIzaSyAhB95qGTLbjt7t20FwgnTQEAB-dA9THF4"
+          }
       }
     },
     "web": {

@@ -1,38 +1,63 @@
-import React, { useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React, { useEffect, useContext , useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import db from "../db";
-import { Icon } from "react-native-elements";
-export default function Sensor({ sensor , isTester }) {
+import { Icon, Button } from "react-native-elements";
+import UserContext from "../UserContext";
 
-
+export default function Sensor({ sensor, isTester }) {
   const rand = Math.floor(Math.random() * (12000 - 2500 + 1) + 2500);
-  const Interval = null;
+  const { user } = useContext(UserContext);
+  const [isTypeTwo, setIsTypeTwo] = useState(false);
+
+  const { id } = user;
 
   useEffect(() => {
     if (!isTester) {
       handleStartSimulator();
     }
-
-    // return () => {
-    //   clearInterval(Interval)
-    // };
   }, []);
 
+  
+function checkAvailability(arr, val) {
+  return arr.some(function(arrVal) {
+    return val === arrVal;
+  });
+}
+
   const handleStartSimulator = async () => {
+    const SensorSetOne = ['Water Sensor','Food Sensor','Electricity Sensor'];
+    const SensorSetTwo = ['Weather Sensor', 'BP Sensor'];
+   
+
     setInterval(async () => {
       let SensorItem = await db.Sensors.findOne(sensor.id);
-      db.Sensors.UpdateSensors(SensorItem);
+      if(checkAvailability(SensorSetOne, SensorItem.name)){
+        await db.Sensors.UpdateSensors(SensorItem, id);
+      }  
+      else if(checkAvailability(SensorSetTwo, SensorItem.name)){
+        await db.Sensors.UpdateSensorTypeTwo(SensorItem, id);
+        setIsTypeTwo(true)
+      }  
     }, rand);
   };
 
-  
+  const sensorType = (type) => {};
+
   const increment = async (type) => {
     let SensorItem = await db.Sensors.findOne(sensor.id);
-    db.Sensors.IncDecSensor(SensorItem,type);
+    db.Sensors.IncDecSensor(SensorItem, type);
+  };
+
+  const requestSupplement = async () => {
+    await db.notifications.createNotification("TBA", sensor, id);
+    const deviceDetails = await db.Devices.findOne(sensor.DeviceID);
+    const farmDetails = await db.Farms.findOne(deviceDetails.FarmUID);
+    await db.supplement.createSupplementRequest(
+      sensor.id,
+      id,
+      farmDetails.supplier
+    );
+    await db.Sensors.updateSupplementNeed(sensor.id);
   };
 
   return (
@@ -40,26 +65,34 @@ export default function Sensor({ sensor , isTester }) {
       <View style={{ flexDirection: "row" }}>
         <Text style={{ marginBottom: 10 }}>
           <Icon size={16} name="star" />
-          current: {sensor.current}
+          current: {sensor.current} : {sensor.Unit}
         </Text>
-        {
-        isTester &&
-        <Icon name="add"  onPress={() => increment("increment")} type="ionicon" color="green" />
-        }
-        {
-        isTester &&
-        <Icon name="remove"  onPress={() => increment("decrement")} type="ionicon" color="green" />
-        }
+        {isTester && (
+          <Icon
+            name="add"
+            onPress={() => increment("increment")}
+            type="ionicon"
+            color="green"
+          />
+        )}
+        {isTester && (
+          <Icon
+            name="remove"
+            onPress={() => increment("decrement")}
+            type="ionicon"
+            color="green"
+          />
+        )}
       </View>
 
       <Text style={{ marginBottom: 10 }}>
         <Icon size={16} name="star" />
-        min: {sensor.Min}
-      </Text> 
+        min: {sensor.Min} : {sensor.Unit}
+      </Text>
 
       <Text style={{ marginBottom: 10 }}>
         <Icon size={16} name="star" />
-        max: {sensor.Max}
+        max: {sensor.Max} : {sensor.Unit}
       </Text>
 
       <Text style={{ marginBottom: 10 }}>
@@ -67,8 +100,28 @@ export default function Sensor({ sensor , isTester }) {
         Status: {sensor.isOn == true ? "on" : "off"}
       </Text>
       {sensor.isOn == true && (
-        <Icon reverse name="warning" type="ionicon" color="orange" />
-      )} 
+        <View>
+          <Icon reverse name="warning" type="ionicon" color="orange" />
+
+          {!sensor.supplementRequest && !isTypeTwo && (
+            <Button
+              buttonStyle={{
+                backgroundColor: "red",
+              }}
+              onPress={() => {
+                requestSupplement();
+              }}
+              title="Request Supplement"
+            />
+          )}
+
+          {sensor.supplementRequest && (
+            <Text style={{ marginBottom: 10, color: "orange" }}>
+              Supplement pending supplier!
+            </Text>
+          )}
+        </View>
+      )}
     </>
   );
 }

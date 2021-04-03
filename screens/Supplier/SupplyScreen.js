@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, Pressable, ScrollView } from "react-native";
 import { View } from "../../components/Themed";
-import { ListItem, Icon } from "react-native-elements";
+import SupplementDetails from "../../components/supplementDetails";
+import { ListItem, Icon, Text, Button } from "react-native-elements";
 import UserContext from "../../UserContext";
 import db from "../../db";
 export default function SupplyScreen() {
   const [payments, setPayments] = useState([]);
+  const [supplier, setSupplier] = useState([]);
+  const [supplement, setSupplement] = useState([]);
+
   const [userCompany, setUserCompany] = useState();
 
   const { user } = useContext(UserContext);
@@ -15,8 +19,13 @@ export default function SupplyScreen() {
     async function fetchUser() {
       const response = await db.Users.findOne(id);
       setUserCompany(response.company);
-      
-      console.log("user company ", userCompany);
+      db.Farms.listenBySupplier(setSupplier, response.company);
+      db.supplement.listenByStatus(
+        setSupplement,
+        "unfulfilled",
+        response.company
+      );
+      console.log("supplement:!  ", supplement);
     }
     try {
       fetchUser();
@@ -25,24 +34,11 @@ export default function SupplyScreen() {
     }
   }, []);
 
-  const makeDecison = async (index, payment, Decison) => {
+  const Supply = async (supplementId,sensorId) => {
     try {
-      const FilteredPayment = payments.filter((payment, i) => i !== index);
-      await db.Payments.update({
-        id: payment.id,
-        Descion: true,
-        Approved: Decison,
-        BuyersName: payment.BuyersName,
-        total: payment.total,
-        dateAndTime: payment.dateAndTime,
-        userId: payment.userId,
-        farmId: payment.farmId,
-        subScriptionId: payment.subScriptionId,
-      });
-      let UpdatedFarmDetails = await db.Farms.UpdateFarm(payment.farmId);
-      setPayments(FilteredPayment);
-      if (Decison) alert("payment approved successfully");
-      else alert("payment rejected successfully");
+      console.log(supplementId)
+      await db.supplement.updateSupplementRequest(supplementId);
+      await db.Sensors.updateSensor(sensorId,10000);
     } catch (error) {
       alert(error);
     }
@@ -51,45 +47,41 @@ export default function SupplyScreen() {
   return (
     <View>
       <ScrollView>
-        {payments.map(
-          (paymentItem, i) =>
-            paymentItem.Descion === false && (
-              <Pressable key={i}>
-                {
-                  <ListItem
-                    style={{ borderWidth: 0.3, borderColor: "green" }}
-                    key={i}
-                    bottomDivider
-                  >
-                    <ListItem.Content>
-                      <ListItem.Title style={{ fontSize: 20 }}>
-                        Buyer: {paymentItem.BuyersName}
-                      </ListItem.Title>
-                      <ListItem.Subtitle>
-                        Payment total: {paymentItem.total}
-                      </ListItem.Subtitle>
-                      <View style={{ flexDirection: "row" }}>
-                        <Icon
-                          raised
-                          name="check"
-                          type="font-awesome"
-                          color="green"
-                          onPress={() => makeDecison(i, paymentItem, true)}
-                        />
-                        <Icon
-                          raised
-                          name="close"
-                          type="font-awesome"
-                          color="red"
-                          onPress={() => makeDecison(i, paymentItem, false)}
-                        />
-                      </View>
-                    </ListItem.Content>
-                  </ListItem>
-                }
-              </Pressable>
-            )
-        )}
+        <Text style={{ textAlign: "center" }} h2>
+          Company: {userCompany}
+        </Text>
+
+        {supplement.map((supplementItem, i) => (
+          <Pressable key={i}>
+            {
+              <ListItem
+                style={{ borderWidth: 0.3, borderColor: "green" }}
+                key={i}
+                bottomDivider
+              >
+                <ListItem.Content>
+                <SupplementDetails sensorid={supplementItem.sensorId} userid={supplementItem.userId} />
+                  <ListItem.Subtitle>
+                    status: {supplementItem.status}
+                  </ListItem.Subtitle>
+                  <ListItem.Subtitle>
+                  </ListItem.Subtitle>
+                  <View style={{ flexDirection: "row" }}>
+                    <Button
+                      buttonStyle={{
+                        backgroundColor: "red",
+                      }}
+                      onPress={() => {
+                        Supply(supplementItem.id,supplementItem.sensorId);
+                      }}
+                      title="Supply"
+                    />
+                  </View>
+                </ListItem.Content>
+              </ListItem>
+            }
+          </Pressable>
+        ))}
       </ScrollView>
     </View>
   );

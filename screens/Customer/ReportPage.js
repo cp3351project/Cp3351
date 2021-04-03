@@ -6,9 +6,8 @@ import ActionPicker from "../pickers/ActionCategory";
 import UserContext from "../../UserContext";
 import db from "./../../db";
 
-export default function ReportPage() {
+export default function ReportPage({ isTester }) {
   const [complain, setComplain] = useState("");
-  const [Uid, setUid] = useState("");
   const [userInput, setuserInput] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -19,10 +18,8 @@ export default function ReportPage() {
     {
       Action: "Report a bug",
     },
-    {
-      Action: "Ask a question",
-    },
   ];
+  !isTester && typeOfComplain.push({ Action: "Ask a question" });
 
   const Submit = async () => {
     try {
@@ -51,7 +48,6 @@ export default function ReportPage() {
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 setModalVisible(!modalVisible);
-                // set('Select Option')
               }}
             >
               <Text style={styles.textStyle}>Dismiss</Text>

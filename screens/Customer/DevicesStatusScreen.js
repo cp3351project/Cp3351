@@ -37,12 +37,6 @@ export default function DeviceStatusScreen({ set }) {
       alert(error);
     }
 
-    // return () => {
-    //   setDevices([])
-    //   setSelectedFarm(null)
-    //   setFarms([])
-    //   setDropDownFarms([])
-    // };
   }, [selectedFarm]);
 
   const SimulateDevices = async () => {
@@ -82,12 +76,7 @@ export default function DeviceStatusScreen({ set }) {
             <Card  key={key}>
               <Card.Title key={key}>Device Name: {dev.name} </Card.Title>
               <Card.Divider />
-         
-              <Text style={{ marginBottom: 10 }}>
-                <Icon key={key} size={16} name="star" />
-                Status: {dev.isOn == true ? "on" : "off"}
-              </Text>
-              <SensorComponent deviceId={dev.id} ></SensorComponent>
+         <SensorComponent deviceId={dev.id} ></SensorComponent>
             </Card>
           ))}
 

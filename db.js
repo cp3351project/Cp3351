@@ -71,8 +71,7 @@ class Sensors extends DB {
       .onSnapshot((snap) => set(snap.docs.map(this.reformat)));
 
   listenByUserAndCategory = (set, userid, categoryid) =>
-    db
-      .collection(this.collection)
+    db.collection(this.collection)
       .where("userid", "==", userid)
       .where("categoryid", "==", categoryid)
       .onSnapshot((snap) => set(snap.docs.map(this.reformat)));
@@ -95,67 +94,226 @@ class Sensors extends DB {
       .doc(sensor.id)
       .set({ alert: !sensor.alert }, { merge: true });
 
-  // reformat = (doc) => ({ id: doc.id, ...doc.data() });
-
   createSensor = async (DeviceID, name) => {
-    let doc = await db.collection(this.collection).add({
-      current: 100,
-      Min: 100,
-      Max: 10000,
-      isOn: false,
-      name: name,
-      DeviceID: DeviceID,
-      active: false,
-    });
+    let options = {};
+    switch (name) {
+      case "Water Sensor":
+        options = {
+          current: 10000,
+          Min: 100,
+          Max: 10000,
+          isOn: false,
+          Unit:"Litres",
+          name: name,
+          supplementRequest:false,
+          DeviceID: DeviceID,
+          active: false,
+        };
+        break;
+      case "Food Sensor":
+        options = {
+          current: 10000,
+          Min: 100,
+          Max: 10000,
+          isOn: false,
+          Unit:"KG",
+          supplementRequest:false,
+          name: name,
+          DeviceID: DeviceID,
+          active: false,
+        };
+        break;
+      case "Weather Sensor":
+        options = {
+          current: 25,
+          Min: 0,
+          Max: 60,
+          isOn: false,
+          name: name,
+          DeviceID: DeviceID,
+          active: false,
+        };
+        break;
+      case "GPS Sensor":
+        options = {
+          long: 51.32014642820132,
+          lat: 25.257019556609464,
+          isOn: false,
+          name: name,
+          Unit:"Long / Lat",
+          DeviceID: DeviceID,
+          active: false,
+        };
+        break;
+          case "temperature Sensor":
+        options = {
+          current: 37,
+          Min: 35,
+          Max: 40,
+          Unit:"Celsius",
+          isOn: false,
+          name: name,
+          DeviceID: DeviceID,
+          active: false,
+        };
+        break;
+        case "BP Sensor":
+          options = {
+            current: 120,
+            Min: 100,
+            Max: 180,
+            Unit:"mm HG",
+            isOn: false,
+            name: name,
+            DeviceID: DeviceID,
+            active: false,
+          };
+          break;
+          case "Electricity Sensor":
+            options = {
+              current: 10000,
+              Min: 100,
+              Max: 10000,
+              Unit:"KW",
+              isOn: false,
+              name: name,
+              DeviceID: DeviceID,
+              active: false,
+            };
+            break;
+    }
+
+    let doc = await db.collection(this.collection).add(options);
     return doc.id;
   };
 
-  FetchSensors =  (deviceId, setSensor)  => {
-     db.collection(this.collection)
-      .where("DeviceID", "==",deviceId).onSnapshot((snap) => {
+  FetchSensors = (deviceId, setSensor) => {
+    db.collection(this.collection)
+      .where("DeviceID", "==", deviceId)
+      .onSnapshot((snap) => {
         setSensor(snap.docs.map(this.reformat));
       });
   };
 
-  UpdateSensors = (Sensor) => {
 
-    if(Sensor.current > Sensor.Max){
-      db.collection(this.collection)
-      .doc(Sensor.id)
-      .set(
-        {
-          current: firebase.firestore.FieldValue.increment(
-            Math.floor(Math.random() * (-100 - -20 + -1) + -20)
-          ),isOn:true
-        },
-        { merge: true }
-      );
-    }
-    else {
-      db.collection(this.collection)
-      .doc(Sensor.id)
-      .set(
-        {
-          current: firebase.firestore.FieldValue.increment(
-            Math.floor(Math.random() * (600 - 300 + 1) + 300)
-          ),isOn:false
-        },
-        { merge: true }
-      );
+
+    UpdateSensors = async (Sensor, id) => {
+    if (Sensor.current <= Sensor.Min) {
+
+      await db
+        .collection(this.collection)
+        .doc(Sensor.id)
+        .set(
+          {
+            isOn: true,
+          },
+          { merge: true }
+        );
+    } else {
+      await db
+        .collection(this.collection)
+        .doc(Sensor.id)
+        .set(
+          {
+            current: firebase.firestore.FieldValue.increment(
+              Math.floor(
+                Math.random() *
+                  (-(Sensor.current / 100) * 10 -
+                    -(Sensor.current / 100) * 2 +
+                    1) +
+                  -(Sensor.current / 100) * 2
+              )
+            ),
+            isOn: false,
+          },
+          { merge: true }
+        );
     }
   };
 
+  UpdateSensorTypeTwo = async (Sensor, id) => {
+    if (Sensor.current > Sensor.Max) {
+      let Notification = new Notifications();
+      let supplement = new Supplement()
+      await db
+        .collection(this.collection)
+        .doc(Sensor.id)
+        .set(
+          {
+            current: firebase.firestore.FieldValue.increment(
+              Math.floor(
+                Math.random() *
+                  (-(Sensor.current / 100) * 10 -
+                    -(Sensor.current / 100) * 5 +
+                    -1) +
+                  -(Sensor.current / 100) * 5
+              )
+            ),
+            isOn: true,
+          },
+          { merge: true }
+        );
+      await Notification.createNotification("TBA",Sensor,id)
+    } else {
+      await db
+        .collection(this.collection)
+        .doc(Sensor.id)
+        .set(
+          {
+            current: firebase.firestore.FieldValue.increment(
+              Math.floor(
+                Math.random() *
+                  ((Sensor.current / 100) * 10 -
+                    (Sensor.current / 100) * 2 +
+                    1) +
+                  (Sensor.current / 100) * 2
+              )
+            ),
+            isOn: false,
+          },
+          { merge: true }
+        );
+    }
+  };
 
-  IncDecSensor = (Sensor,type) => {
-      db.collection(this.collection)
+  
+
+  IncDecSensor = (Sensor, type) => {
+    db.collection(this.collection)
       .doc(Sensor.id)
       .set(
         {
-          current: firebase.firestore.FieldValue.increment((type == "increment" ? 1 : -1)),isOn:false
+          current: firebase.firestore.FieldValue.increment(
+            type == "increment" ? 1 : -1
+          ),
+          isOn: false,
         },
         { merge: true }
       );
-    
+  };
+
+  updateSupplementNeed =async (sensorId) => {
+    await db.collection(this.collection)
+      .doc(sensorId)
+      .set(
+        {
+          supplementRequest:true,
+        },
+        { merge: true }
+      );
+  };
+
+
+   updateSensor =async (sensorId, value) => {
+    await db.collection(this.collection)
+      .doc(sensorId)
+      .set( 
+        {
+          current:value,   
+          supplementRequest:false,
+        },
+        { merge: true }
+      );
   };
 
 
@@ -177,38 +335,44 @@ class Farms extends DB {
     return doc.id;
   };
 
+  listenBySupplier = (set, supplierName) => {
+    db.collection(this.collection)
+      .where("supplier", "==", supplierName)
+      .onSnapshot((snap) => set(snap.docs.map(this.reformat)));
+  };
+
   listenUser = (set, setDropdown, userId) => {
     db.collection(this.collection)
       .where("user", "==", userId)
       .onSnapshot((snap) => {
-        set(snap.docs.map(this.reformat).filter(item => item.active == true));
+        set(snap.docs.map(this.reformat).filter((item) => item.active == true));
         setDropdown(
-          snap.docs.map(this.reformat).filter(item => item.active == true).map((farm) => {
-            return { Action: farm.farmName };
-          })
+          snap.docs
+            .map(this.reformat)
+            .filter((item) => item.active == true)
+            .map((farm) => {
+              return { Action: farm.farmName };
+            })
         );
       });
   };
-
 
   listenFarms = (set, setDropdown, userId) => {
-    db.collection(this.collection)
-      .onSnapshot((snap) => {
-        set(snap.docs.map(this.reformat));
-        setDropdown(
-          snap.docs.map(this.reformat).map((farm) => {
-            return { Action: farm.farmName };
-          })
-        );
-      });
+    db.collection(this.collection).onSnapshot((snap) => {
+      set(snap.docs.map(this.reformat));
+      setDropdown(
+        snap.docs.map(this.reformat).map((farm) => {
+          return { Action: farm.farmName };
+        })
+      );
+    });
   };
 
-
-
-
-  
-  UpdateFarm =  async(farmId) => {
-   await db.collection(this.collection).doc(farmId).update({active:true,subScriptionStatus:"payed"},{merge:true})
+  UpdateFarm = async (farmId) => {
+    await db
+      .collection(this.collection)
+      .doc(farmId)
+      .update({ active: true, subScriptionStatus: "payed" }, { merge: true });
   };
 
   listenByUser = (set, userid) => {
@@ -216,7 +380,6 @@ class Farms extends DB {
       db.collection(this.collection)
         .where("user", "==", userid)
         .onSnapshot((snap) => {
-        
           set(snap.docs.map(this.reformat));
         });
     } catch (error) {
@@ -259,7 +422,6 @@ class Devices extends DB {
   };
 }
 
-
 class Animals extends DB {
   constructor() {
     super("Animals");
@@ -274,9 +436,10 @@ class Animals extends DB {
       });
   };
 
-  createAnimal = async (FarmId, name) => {
+  createAnimal = async ( FarmId , name , deviceId) => {
     let doc = await db.collection(this.collection).add({
       name: name,
+      deviceID:deviceId,
       FarmId: FarmId,
       HealthStatus: "healthy",
     });
@@ -307,16 +470,14 @@ class Payments extends DB {
     switch (subScriptionId) {
       case 0: {
         FarmId = await farm.createFarm(userId, location, farmName, supplierId);
-         await animal.createAnimal(FarmId,"Cow");
-         await animal.createAnimal(FarmId,"goat");
-         await animal.createAnimal(FarmId,"chicken");
         let WaterPumpdeviceId = await device.createDevice(FarmId, "Water Pump");
-        let AnimalChipsetdeviceId = await device.createDevice(
-          FarmId,
-          "Animal Chipset"
-        );
+        let AnimalChipsetdeviceId = await device.createDevice(FarmId,"Animal Chipset");
         await sensor.createSensor(WaterPumpdeviceId, "Water Sensor");
         await sensor.createSensor(AnimalChipsetdeviceId, "Food Sensor");
+        await sensor.createSensor(AnimalChipsetdeviceId, "BP Sensor");
+        await animal.createAnimal(FarmId, "Cow",AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "goat",AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "chicken",AnimalChipsetdeviceId);
         total = 9999;
         break;
       }
@@ -324,17 +485,15 @@ class Payments extends DB {
         FarmId = await farm.createFarm(userId, location, farmName, supplierId);
         let WaterPumpdeviceId = await device.createDevice(FarmId, "Water Pump");
         let FandeviceId = await device.createDevice(FarmId, "Fan");
-        await animal.createAnimal(FarmId,"Cow");
-        await animal.createAnimal(FarmId,"goat");
-        await animal.createAnimal(FarmId,"chicken");
-        await animal.createAnimal(FarmId,"turkey");
-        let AnimalChipsetdeviceId = await device.createDevice(
-          FarmId,
-          "Animal Chipset"
-        );
+        let AnimalChipsetdeviceId = await device.createDevice(FarmId,"Animal Chipset");
         await sensor.createSensor(WaterPumpdeviceId, "Water Sensor");
         await sensor.createSensor(FandeviceId, "Weather Sensor");
         await sensor.createSensor(AnimalChipsetdeviceId, "Food Sensor");
+        await sensor.createSensor(AnimalChipsetdeviceId, "BP Sensor");
+        await animal.createAnimal(FarmId, "Cow",AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "goat",AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "chicken",AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "turkey",AnimalChipsetdeviceId);
         total = 29999;
         break;
       }
@@ -342,26 +501,18 @@ class Payments extends DB {
         FarmId = await farm.createFarm(userId, location, farmName, supplierId);
         let WaterPumpdeviceId = await device.createDevice(FarmId, "Water Pump");
         let FandeviceId = await device.createDevice(FarmId, "Fan");
-        await animal.createAnimal(FarmId,"Cow");
-        await animal.createAnimal(FarmId,"goat");
-        await animal.createAnimal(FarmId,"chicken");
-        await animal.createAnimal(FarmId,"turkey");
-        await animal.createAnimal(FarmId,"horse");
-        let BackUpGeneratordeviceId = await device.createDevice(
-          FarmId,
-          "Backup Generator"
-        );
-        let AnimalChipsetdeviceId = await device.createDevice(
-          FarmId,
-          "Animal Chipset"
-        );
+        let BackUpGeneratordeviceId = await device.createDevice(FarmId,"Backup Generator");
+        let AnimalChipsetdeviceId = await device.createDevice(FarmId,"Animal Chipset");
         await sensor.createSensor(WaterPumpdeviceId, "Water Sensor");
         await sensor.createSensor(FandeviceId, "Weather Sensor");
         await sensor.createSensor(AnimalChipsetdeviceId, "Food Sensor");
-        await sensor.createSensor(
-          BackUpGeneratordeviceId,
-          "Electricity Sensor"
-        );
+        await sensor.createSensor(AnimalChipsetdeviceId, "BP Sensor");
+        await sensor.createSensor(BackUpGeneratordeviceId,"Electricity Sensor");
+        await animal.createAnimal(FarmId, "Cow", AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "goat", AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "chicken", AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "turkey", AnimalChipsetdeviceId);
+        await animal.createAnimal(FarmId, "horse", AnimalChipsetdeviceId);
         total = 70000;
         break;
       }
@@ -384,7 +535,6 @@ class Reports extends DB {
   }
 
   createReport = async (typeOfQuery, query, userId) => {
-    console.log(userId)
     await db.collection(this.collection).add({
       typeOfQuery: typeOfQuery,
       query: query,
@@ -400,6 +550,40 @@ class Reports extends DB {
       .collection(this.collection)
       .where("categoryid", "==", categoryid)
       .onSnapshot((snap) => set(snap.docs.map(this.reformat)));
+}
+
+
+class Supplement extends DB {
+  constructor() {
+    super("Supplement");
+  }
+
+  updateSupplementRequest = async (supplementId) => {
+    await db.collection(this.collection)
+      .doc(supplementId)
+      .set(
+        {
+          status: 'fulfilled'
+        },
+        { merge: true }
+      );
+  };
+
+  listenByStatus = (set, status , company) =>
+    db.collection(this.collection)
+      .where("status", "==", status)
+      .where("company", "==", company)
+      .onSnapshot((snap) => set(snap.docs.map(this.reformat)));
+
+  createSupplementRequest = async (sensorId,userId,company) => {
+    await db.collection(this.collection).add({
+      sensorId: sensorId,
+      userId: userId,
+      status:'unfulfilled',
+      company:company,
+      dateAndTime: new Date(),
+    });
+  };
 }
 
 class Readings extends DB {
@@ -434,6 +618,22 @@ class Readings extends DB {
       .onSnapshot((snap) => set(snap.docs.map(this.reformat)[0]));
 }
 
+class Notifications extends DB {
+
+  constructor() {
+    super("Notifications");
+  }
+
+  createNotification =  async (typeOfNotification,notificationDetails,userId) => 
+      await db.collection(this.collection).add({
+      typeOfNotification: typeOfNotification,
+      notificationDetails: notificationDetails,
+      userId: userId,
+      dateAndTime: new Date(),
+    });
+  };
+
+
 class Users extends DB {
   constructor() {
     super("users");
@@ -461,5 +661,7 @@ export default {
   Reports: new Reports(),
   Devices: new Devices(),
   Payments: new Payments(),
-  Animals: new Animals()
+  Animals: new Animals(),
+  notifications: new Notifications(),
+  supplement: new Supplement(),
 };

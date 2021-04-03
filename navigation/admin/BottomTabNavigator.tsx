@@ -6,12 +6,14 @@ import * as React from 'react';
 import Colors from '../../constants/Colors';
 import useColorScheme from '../../hooks/useColorScheme';
 // @ts-expect-error
-import SensorsScreen from '../../screens/Admin/DashboardScreen';
+import QaScreen from '../../screens/Customer/QaScreen';
+// @ts-expect-error
+import NotificationScreen from '../../screens/Admin/NotificationScreen';
 // @ts-expect-error
 import ActionsScreen from '../../screens/Admin/ActionsScreen';
 // @ts-expect-error
 import SettingsScreen from '../../screens/Admin/SettingsScreen';
-import { BottomTabParamList, TabOneParamList, TabTwoParamList, TabThreeParamList } from './types';
+import { BottomTabParamList, TabOneParamList, TabTwoParamList, TabThreeParamList,TabFourParamList  } from './types';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -28,13 +30,22 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="ios-play" color={color} />,
         }}
       />
-      {/* <BottomTab.Screen
-        name="Actions"
+      <BottomTab.Screen
+        name="Q&A"
         component={TabTwoNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="question" color={color} />,
         }}
-      /> */}
+      />
+
+      <BottomTab.Screen
+        name="Notifications"
+        component={TabFourNavigator}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="alert" color={color} />,
+        }}
+      />
+
       <BottomTab.Screen
         name="Settings"
         component={TabThreeNavigator}
@@ -69,19 +80,19 @@ function TabOneNavigator() {
   );
 }
 
-// const TabTwoStack = createStackNavigator<TabTwoParamList>();
+const TabTwoStack = createStackNavigator<TabTwoParamList>();
 
-// function TabTwoNavigator() {
-//   return (
-//     <TabTwoStack.Navigator>
-//       <TabTwoStack.Screen
-//         name="ActionsScreen"
-//         component={ActionsScreen}
-//         options={{ headerTitle: 'Actions' }}
-//       />
-//     </TabTwoStack.Navigator>
-//   );
-// }
+function TabTwoNavigator() {
+  return (
+    <TabTwoStack.Navigator>
+      <TabTwoStack.Screen
+        name="QaScreen"
+        component={QaScreen}
+        options={{ headerTitle: 'Q&A' }}
+      />
+    </TabTwoStack.Navigator>
+  );
+}
 
 const TabThreeStack = createStackNavigator<TabThreeParamList>();
 
@@ -94,5 +105,22 @@ function TabThreeNavigator() {
         options={{ headerTitle: 'Settings' }}
       />
     </TabThreeStack.Navigator>
+  );
+}
+
+
+
+
+const TabFourStack = createStackNavigator<TabFourParamList>();
+
+function TabFourNavigator() {
+  return (
+    <TabFourStack.Navigator>
+      <TabFourStack.Screen
+        name="SettingsScreen"
+        component={NotificationScreen}
+        options={{ headerTitle: 'Notifications' }}
+      />
+    </TabFourStack.Navigator>
   );
 }

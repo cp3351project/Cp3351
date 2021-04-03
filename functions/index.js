@@ -90,6 +90,9 @@ exports.createSampleData = functions.https.onCall(
 
     const { uid: authId6 } = await admin.auth().createUser({ email: "jimmy@jimmy.com", password: "jimmyjimmy" })
     functions.logger.info("authId6", { authId6 })
+    
+    const { uid: authId7 } = await admin.auth().createUser({ email: "raul@raul.com", password: "raulraul" })
+    functions.logger.info("authId7", { authId7 })
 
     const result1 = await db.collection('users').doc(authId1).set({ name: "Joe", role: "Customer" })
     functions.logger.info("result1", { result1 })
@@ -108,6 +111,9 @@ exports.createSampleData = functions.https.onCall(
     
     const result6 = await db.collection('users').doc(authId6).set({ name: "jimmy", role: "financial" })
     functions.logger.info("result6", { result6 })
+
+    const result7= await db.collection('users').doc(authId7).set({ name: "raul", role: "Supplier" , company: "QPIC" })
+    functions.logger.info("result7", { result7 })
 
     // const { id: categoryId1 } = await db.collection('categories').add({ name: "Motion" })
     // functions.logger.info("categoryId1", { categoryId1 })

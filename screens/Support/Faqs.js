@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { View } from "react-native";
 import { StyleSheet, ScrollView,Pressable  } from "react-native";
 import { ListItem,Text,Button,Input } from "react-native-elements";
 import db from "../../db";
@@ -37,6 +38,7 @@ export default function Faqs() {
         typeOfQuery:item.typeOfQuery,
         dateAndTime:item.dateAndTime
       })
+      alert("Submit successfully")
     } catch (error) {
       alert(error.message);
     }
@@ -51,8 +53,19 @@ export default function Faqs() {
         <ListItem key={i} bottomDivider>
           <ListItem.Content style={{height:150}}>
           <Pressable onPress={()=> updateActiveItem(i)}>
-            <ListItem.Title>{l.query}</ListItem.Title>
+            
+            <View style={{ flexDirection: "row"}}>
+            <Text>Type of Query: </Text> 
             <ListItem.Subtitle>{l.typeOfQuery}</ListItem.Subtitle>
+            </View>
+            <View style={{ flexDirection: "row"}}>
+            <Text>Query: </Text> 
+            <ListItem.Title>{l.query}</ListItem.Title>
+            </View>
+            <View style={{ flexDirection: "row"}}>
+            <Text>Reply: </Text> 
+            <ListItem.Subtitle>{l.reply}</ListItem.Subtitle>
+            </View>
             </Pressable>
             {
             ActiveIndex===i

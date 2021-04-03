@@ -11,7 +11,6 @@ export default function SensorComponent({ deviceId , isTester  }) {
   useEffect(() => {
     db.Sensors.FetchSensors(deviceId,setSensor);
     return () => {
-      // setSensor([])
     };
   }, []);
 

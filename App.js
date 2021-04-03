@@ -8,9 +8,8 @@ import NavigationAdmin from "./navigation/admin";
 import NavigationSupport from "./navigation/support";
 import NavigationFinancial from "./navigation/Financial";
 import NavigationTester from "./navigation/Tester";
-
+import NavigationSupplier from "./navigation/Supplier";
 import { LogBox } from "react-native";
-
 import fb from "./fb";
 import db from "./db";
 import UserContext from "./UserContext";
@@ -53,7 +52,10 @@ export default function App() {
       return <NavigationSupport colorScheme={colorScheme} />;
     } else if (user?.role === "Tester") {
       return <NavigationTester colorScheme={colorScheme} />;
-    } else if (user?.role === "financial") {
+    } else if (user?.role === "Supplier") {
+      return <NavigationSupplier colorScheme={colorScheme} />;
+    } 
+    else if (user?.role === "financial") {
       return <NavigationFinancial colorScheme={colorScheme} />;
     } else {
       fb.auth().signOut();
