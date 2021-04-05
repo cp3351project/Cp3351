@@ -69,7 +69,7 @@ export default function addFarmScreen({set,admin,dismissModal,subId}) {
   const Submit = async () => {
     try {
       if(admin) {
-        await db.Farms.createFarm(Uid, Location, name, Supplier);
+        await db.Farms.createFarm(Uid, Location, name, Supplier,true);
         setModalVisible(true)     
       }
       else {

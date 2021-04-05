@@ -323,14 +323,14 @@ class Farms extends DB {
   constructor() {
     super("Farms");
   }
-  createFarm = async (userId, location, farmName, supplierId) => {
+  createFarm = async (userId, location, farmName, supplierId,isActive) => {
     let doc = await db.collection(this.collection).add({
       user: userId,
       farmName: farmName,
       location: location,
       supplier: supplierId,
       subScriptionStatus: "unpayed",
-      active: false,
+      active: isActive,
     });
     return doc.id;
   };
@@ -484,7 +484,7 @@ class Payments extends DB {
     const animal = new Animals();
     switch (subScriptionId) {
       case 0: {
-        FarmId = await farm.createFarm(userId, location, farmName, supplierId);
+        FarmId = await farm.createFarm(userId, location, farmName, supplierId,false);
         let WaterPumpdeviceId = await device.createDevice(FarmId, "Water Pump");
         let AnimalChipsetdeviceId = await device.createDevice(FarmId,"Animal Chipset");
         await sensor.createSensor(WaterPumpdeviceId, "Water Sensor");
@@ -497,7 +497,7 @@ class Payments extends DB {
         break;
       }
       case 1: {
-        FarmId = await farm.createFarm(userId, location, farmName, supplierId);
+        FarmId = await farm.createFarm(userId, location, farmName, supplierId,false);
         let WaterPumpdeviceId = await device.createDevice(FarmId, "Water Pump");
         let FandeviceId = await device.createDevice(FarmId, "Fan");
         let AnimalChipsetdeviceId = await device.createDevice(FarmId,"Animal Chipset");
@@ -513,7 +513,7 @@ class Payments extends DB {
         break;
       }
       case 2: {
-        FarmId = await farm.createFarm(userId, location, farmName, supplierId);
+        FarmId = await farm.createFarm(userId, location, farmName, supplierId,false);
         let WaterPumpdeviceId = await device.createDevice(FarmId, "Water Pump");
         let FandeviceId = await device.createDevice(FarmId, "Fan");
         let BackUpGeneratordeviceId = await device.createDevice(FarmId,"Backup Generator");

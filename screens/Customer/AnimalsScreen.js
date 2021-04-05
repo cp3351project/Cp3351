@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, ScrollView } from "react-native";
-import { View } from "../../components/Themed";
+import { StyleSheet, ScrollView , View } from "react-native";
+// import { View } from "../../components/Themed";
 import { Button, Text, Card, ListItem, Icon } from "react-native-elements";
 import UserContext from "../../UserContext";
 import SensorComponent from "../../components/SensorComponent";
 import ActionPicker from "../pickers/ActionCategory";
-import Map from "../../components/Map";
+import MapComponent from "../../components/MapComponent";
 import db from "../../db";
 
 export default function AnimalsScreen({ set }) {
@@ -59,8 +59,7 @@ export default function AnimalsScreen({ set }) {
 
   return (
     <View>
-
-{animalLocation && <Map set={showAnimalLocation} />}
+      {animalLocation && <MapComponent set={showAnimalLocation} />}
 
       <ScrollView style={styles.container}>
         {farms?.length > 0 && (
@@ -121,9 +120,6 @@ export default function AnimalsScreen({ set }) {
         />
       </ScrollView>
     </View>
-
-    
-
   );
 }
 
