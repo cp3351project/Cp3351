@@ -253,7 +253,7 @@ class Sensors extends DB {
           },
           { merge: true }
         );
-      await Notification.createNotification("TBA",Sensor,id)
+      await Notification.createNotification("Update",Sensor,id)
     } else {
       await db
         .collection(this.collection)
@@ -263,7 +263,7 @@ class Sensors extends DB {
             current: firebase.firestore.FieldValue.increment(
               Math.floor(
                 Math.random() *
-                  ((Sensor.current / 100) * 10 -
+                  ((Sensor.current / 100) * 12 -
                     (Sensor.current / 100) * 2 +
                     1) +
                   (Sensor.current / 100) * 2
@@ -350,6 +350,21 @@ class Farms extends DB {
           snap.docs
             .map(this.reformat)
             .filter((item) => item.active == true)
+            .map((farm) => {
+              return { Action: farm.farmName };
+            })
+        );
+      });
+  };
+
+  listenUserForAdmin = (set, setDropdown, userId) => {
+    db.collection(this.collection)
+      .where("user", "==", userId)
+      .onSnapshot((snap) => {
+        set(snap.docs.map(this.reformat));
+        setDropdown(
+          snap.docs
+            .map(this.reformat)
             .map((farm) => {
               return { Action: farm.farmName };
             })

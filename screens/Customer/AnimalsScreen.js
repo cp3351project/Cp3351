@@ -84,19 +84,13 @@ export default function AnimalsScreen({ set }) {
               <Card.Title key={key}>Animal name: {Animal.name} </Card.Title>
               <Card.Divider />
 
-              <Button
-                buttonStyle={{
-                  backgroundColor: "green",
-                  margin: 20,
-                }}
+              <Icon
+                raised
+                name='map'
+                type='font-awesome'
+                color='green'  
                 onPress={() =>  {
                    showAnimalLocation(true)}}
-                icon={{
-                  name: "arrow-left",
-                  size: 15,
-                  color: "white",
-                }}
-                title="show location"
               />
               <Text style={{ marginBottom: 10 }}>
                 <Icon key={key} size={16} name="star" />

@@ -15,18 +15,15 @@ export default function addDeviceScreen({func}) {
 
   useEffect(() => {
     try {
-      db.Farms.listenUser(setFarms, setDropDownFarms, Uid)      
+      db.Farms.listenUserForAdmin(setFarms, setDropDownFarms, Uid)
     } catch (error) {
       alert(error)
     }
-
-
-
   },[Uid]);
 
   const Submit = async () => {
     try {
-      await db.Devices[func](farms.find((farm) => farm.farmName === selectedFarm).id);
+      await db.Devices.createDevice(farms.find((farm) => farm.farmName === selectedFarm).id,func);
       setModalVisible(true);
     } catch (error) {
       alert(error.message);
@@ -61,7 +58,6 @@ export default function addDeviceScreen({func}) {
 
       <View style={{ flexDirection: "row", marginStart: 10 }}>
         <Text style={{ marginTop: 15 }}>Select User: </Text>
-
         <UserPicker setUid={setUid} />
       </View>
       <View style={{ flexDirection: "row", marginStart: 10 }}>

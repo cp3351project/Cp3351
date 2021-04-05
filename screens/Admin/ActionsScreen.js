@@ -53,35 +53,28 @@ const [Action, setAction] = useState(null)
         &&
         Action === "add Water pump"
         &&
-        <AddDevice func={'createWaterPump'} />
+        <AddDevice func={'Water Pump'} />
       }
       {
         Action
         &&
         Action === "add Back up generator"
         &&
-        <AddDevice func={'createBackUpGenerator'} />
+        <AddDevice func={'Backup Generator'} />
       }
       {
         Action
         &&
         Action === "add Animal Chipset"
         &&
-        <AddDevice func={'createAnimalChipset'} />
+        <AddDevice func={'Animal Chipset'} />
       }
       {
         Action
         &&
         Action === "add Fan"
         &&
-        <AddDevice func={'createFan'} />
-      }
-      {
-        Action
-        &&
-        Action === "add Food lid"
-        &&
-        <AddDevice func={'creatFoodLid'} />
+        <AddDevice func={'Fan'} />
       }
     </View>
   );

@@ -11,7 +11,6 @@ export default function supplementDetails({ sensorid , userid  }) {
   useEffect(() => {
     db.Users.listenOne(setSensor,userid);
     db.Farms.listenOne(setUser,sensorid);
-    console.log("sss", SensorItem,user)
   }, []);
 
 

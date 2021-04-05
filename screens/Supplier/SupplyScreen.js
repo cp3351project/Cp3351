@@ -25,7 +25,6 @@ export default function SupplyScreen() {
         "unfulfilled",
         response.company
       );
-      console.log("supplement:!  ", supplement);
     }
     try {
       fetchUser();
@@ -36,7 +35,6 @@ export default function SupplyScreen() {
 
   const Supply = async (supplementId,sensorId) => {
     try {
-      console.log(supplementId)
       await db.supplement.updateSupplementRequest(supplementId);
       await db.Sensors.updateSensor(sensorId,10000);
     } catch (error) {

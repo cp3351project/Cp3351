@@ -10,7 +10,7 @@ export default function NotificationScreen() {
 
   useEffect(() => {
     try {
-      db.Notifications.listenAll(setNotifications);
+      db.notifications.listenAll(setNotifications);
     } catch (error) {
       alert(error);
     }
@@ -23,7 +23,7 @@ export default function NotificationScreen() {
           Notifications.map((question, key) => (
             <Card key={key}>
               <Card.Title key={key}>
-                Type of Notification: {question.typeOfNotification}{" "}
+                Type of Notification: {question.typeOfNotification}
               </Card.Title>
               <Card.Divider />
               <Text style={{ marginBottom: 10 }}>

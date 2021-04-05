@@ -10,10 +10,12 @@ import QaScreen from '../../screens/Customer/QaScreen';
 // @ts-expect-error
 import SensorsScreen from '../../screens/Customer/SensorsScreen';
 // @ts-expect-error
+import NotificationScreen from '../../screens/Admin/NotificationScreen';
+// @ts-expect-error
 import FAQScreen from '../../screens/Customer/ReportPage';
 
 
-import { BottomTabParamList, TabOneParamList, TabTwoParamList, TabThreeParamList } from './types';
+import { BottomTabParamList, TabOneParamList, TabTwoParamList, TabThreeParamList , TabFourParamList } from './types';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -27,21 +29,30 @@ export default function BottomTabNavigator() {
         name="Menu"
         component={TabOneNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="grid-outline" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="grid-outline" color='green' />,
         }}
       />
       <BottomTab.Screen
         name="FAQ"
         component={TabTwoNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="help-outline" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="help-outline" color='green' />,
         }}
       />
       <BottomTab.Screen
         name="QA"
         component={TabThreeNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="person" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="person" color='green' />,
+        }}
+      />
+
+      
+      <BottomTab.Screen
+        name="Notifications"
+        component={TabFourNavigator}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="alert" color='green' />,
         }}
       />
     </BottomTab.Navigator>
@@ -96,5 +107,19 @@ function TabThreeNavigator() {
         options={{ headerTitle: 'Q&A' }}
       />
     </TabThreeStack.Navigator>
+  );
+}
+
+const TabFourStack = createStackNavigator<TabFourParamList>();
+
+function TabFourNavigator() {
+  return (
+    <TabFourStack.Navigator>
+      <TabFourStack.Screen
+        name="NotificationsScreen"
+        component={NotificationScreen}
+        options={{ headerTitle: 'Notifications' }}
+      />
+    </TabFourStack.Navigator>
   );
 }

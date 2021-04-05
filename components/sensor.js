@@ -5,7 +5,7 @@ import { Icon, Button } from "react-native-elements";
 import UserContext from "../UserContext";
 
 export default function Sensor({ sensor, isTester }) {
-  const rand = Math.floor(Math.random() * (12000 - 2500 + 1) + 2500);
+  const rand = Math.floor(Math.random() * (16000 - 10500 + 1) + 10500);
   const { user } = useContext(UserContext);
   const [isTypeTwo, setIsTypeTwo] = useState(false);
 
@@ -41,15 +41,13 @@ function checkAvailability(arr, val) {
     }, rand);
   };
 
-  const sensorType = (type) => {};
-
   const increment = async (type) => {
     let SensorItem = await db.Sensors.findOne(sensor.id);
     db.Sensors.IncDecSensor(SensorItem, type);
   };
 
   const requestSupplement = async () => {
-    await db.notifications.createNotification("TBA", sensor, id);
+    await db.notifications.createNotification("Request Supplment", sensor, id);
     const deviceDetails = await db.Devices.findOne(sensor.DeviceID);
     const farmDetails = await db.Farms.findOne(deviceDetails.FarmUID);
     await db.supplement.createSupplementRequest(
@@ -70,7 +68,7 @@ function checkAvailability(arr, val) {
         {isTester && (
           <Icon
             name="add"
-            onPress={() => increment("increment")}
+            onPress={async ()  => await increment("increment")}
             type="ionicon"
             color="green"
           />
@@ -78,7 +76,7 @@ function checkAvailability(arr, val) {
         {isTester && (
           <Icon
             name="remove"
-            onPress={() => increment("decrement")}
+            onPress={async () => await increment("decrement")}
             type="ionicon"
             color="green"
           />
@@ -97,19 +95,19 @@ function checkAvailability(arr, val) {
 
       <Text style={{ marginBottom: 10 }}>
         <Icon size={16} name="star" />
-        Status: {sensor.isOn == true ? "on" : "off"}
+        Status: {(sensor.current > sensor.Max) || (sensor.current < sensor.Min) ? "on" : "off"}
       </Text>
-      {sensor.isOn == true && (
+      {(sensor.current >= sensor.Max) || (sensor.current <= sensor.Min) && (
         <View>
-          <Icon reverse name="warning" type="ionicon" color="orange" />
+          <Icon reverse name="warning" type="ionicon" color="red" />
 
           {!sensor.supplementRequest && !isTypeTwo && (
             <Button
               buttonStyle={{
-                backgroundColor: "red",
+                backgroundColor: "green",
               }}
-              onPress={() => {
-                requestSupplement();
+              onPress={async () => {
+                await requestSupplement();
               }}
               title="Request Supplement"
             />
