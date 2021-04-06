@@ -1,17 +1,64 @@
-import React, { useState } from "react";
+import * as Notification from "expo-notifications";
+import * as Permission from "expo-permissions";
+import React, { useState , useEffect , useContext} from "react";
 import { StyleSheet, Pressable } from "react-native";
 import { View } from "../../components/Themed";
 import { ListItem, Avatar } from "react-native-elements";
 import FarmStatusScreen from './FarmStatusScreen'
 import DevicesStatusScreen from './DevicesStatusScreen'
 import AnimalsScreen from './AnimalsScreen'
-
 import PurchaseScreen from './PurchaseScreen'
-
+import UserContext from "../../UserContext";
 import fb from "./../../fb";
+
+
+
+Notification.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldPlaySound: true,
+      shouldShowAlert: true,
+    };
+  },
+});
+
 export default function MenuScreen() {
   const [ActiveIndex, setActiveIndex] = useState();
   const [ShowMenu, setShowMenu] = useState(true);
+  const { user } = useContext(UserContext);
+  const { id,name } = user;
+  const handleNotification = () => {
+    Notification.scheduleNotificationAsync({
+      content: {
+        title: "Welcome back " + name,
+        body: "",
+      },
+      trigger: {
+        seconds: 5,
+      },
+    });
+  };
+
+  useEffect(() => {
+    Permission.getAsync(Permission.NOTIFICATIONS)
+      .then((response) => {
+        if (response.status !== "granted") {
+          return Permission.askAsync(Permission.NOTIFICATIONS);
+        }
+        return response;
+      })
+      .then((response) => {
+        if (response.status !== "granted") {
+          return;
+        }
+      });
+
+      handleNotification();
+  }, []);
+
+
+
+
 
   const menuItems = [
     {

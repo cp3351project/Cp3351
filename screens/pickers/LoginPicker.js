@@ -32,15 +32,6 @@ export default function LoginPicker({ setEmail, setPassword, setUid }) {
     
     useEffect(() => {
         handleUser(user)
-
-        // return () => {
-        //     setUser(null)
-        //     if(setEmail){
-        //         setEmail(null)
-        //         setPassword(null)
-        //     }
-        //     setUid(null)
-        //   };
     }, [user])
 
     return ( 

@@ -8,10 +8,6 @@ export default function UserPicker({ set , setUID }) {
     const [users, setUsers] = useState([])
     useEffect(() => {
         db.Users.listenAll(setUsers)
-        // return () => {
-        //     setUserId("")
-        //     setUsers([])
-        //   };
     },[])
     useEffect(() => {
         db.Users.listenOne(set, userId)

@@ -36,7 +36,11 @@ export default function NotificationScreen() {
               </Text>
               <Text style={{ marginBottom: 10 }}>
                 <Icon key={key} size={16} name="star" />
-                Status: {question.notificationDetails.isOn === true ? "On" : "Off"}
+                Increase by: {(question.notificationDetails.current - question.notificationDetails.Max)}
+              </Text>
+              <Text style={{ marginBottom: 10 }}>
+                <Icon key={key} size={16} name="star" />
+                Status: {(question.notificationDetails.current > question.notificationDetails.Max) || (question.notificationDetails.current < question.notificationDetails.Min) ? "on" : "off"}
               </Text>
             </Card>
           ))}

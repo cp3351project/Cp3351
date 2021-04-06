@@ -253,7 +253,7 @@ class Sensors extends DB {
           },
           { merge: true }
         );
-      await Notification.createNotification("Update",Sensor,id)
+      await Notification.createNotification("Alert",Sensor,id)
     } else {
       await db
         .collection(this.collection)

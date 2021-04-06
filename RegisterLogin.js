@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import fb from "./fb";
 import db from "./db";
-import { StyleSheet,TextInput, Image } from "react-native";
-import {  View } from "./components/Themed";
+import { StyleSheet, TextInput, Image } from "react-native";
+import { View } from "./components/Themed";
 import LoginPicker from "./screens/pickers/LoginPicker";
 import { Button } from "react-native-elements";
 
